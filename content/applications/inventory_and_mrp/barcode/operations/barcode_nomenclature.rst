@@ -1,84 +1,177 @@
-========
-Overview
-========
+============================
+Default barcode nomenclature
+============================
 
-There are different situations in which barcode nomenclatures can be
-useful. A well-known use case is the one of a point of sale which sells
-products in bulk, in which the customers will scale their products
-themselves and get the printed barcode to stick on the product. This
-barcode will contain the weight of the product and help compute the
-price accordingly.
+.. |UPC| replace:: :abbr:`UPC (Universal Product Code)`
+.. |EAN| replace:: :abbr:`EAN (European Article Number)`
+.. |GTIN| replace:: :abbr:`GTIN (Global Trade Item Number)`
+.. |GTINs| replace:: :abbr:`GTINs (Global Trade Item Numbers)`
 
-Create a Barcode Nomenclature
-=============================
+*Barcode nomenclatures* define how barcodes are recognized and categorized. When a barcode is
+scanned, it is associated to the **first** rule with a matching pattern. The pattern syntax is
+described in Odoo's nomenclature list using a regular expression, and a barcode is successfully read
+by Odoo if its prefix and/or length matches the one defined in the barcode's rule.
 
-Odoo supports Barcode Nomenclatures, which determine the mapping and
-interpretation of the encoded information. You can configure your barcode nomenclature being in
-:ref:`developer mode <developer-mode>`.
-To do so, go to :menuselection:`Inventory --> Configuration --> Barcode Nomenclature`.
+Odoo *Barcode* supports UPC (Universal Product Code), EAN (European Article Number), and GS1
+encoding. The pre-configured nomenclatures in Odoo are *Default Nomenclature* and *Default GS1
+Nomenclature*. The default nomenclature uses |UPC| and |EAN| encoding, and supports |UPC|/|EAN|
+conversion.
 
-You can create a barcode nomenclature from there, and then add a line to
-create your first rule.
+.. important::
+   |UPC| and |EAN| barcodes **must** be `purchased from GS1
+   <https://www.gs1.org/standards/get-barcodes>`_ to use these barcodes. GS1 is the **only**
+   official provider of |UPC|/|EAN| barcodes globally (as well as GS1 |GTINs|).
 
-.. image:: barcode_nomenclature/barcode_nomenclature_01.png
-    :align: center
+.. _barcode/operations/set-up-nomenclature:
 
-The first step is to specify the **rule name**, for example Weight
-Barcode with 3 Decimals. You then have to specify the type for barcode
-nomenclature, in our case it will be Weighted Product.
+Set up barcode nomenclature
+===========================
 
-.. image:: barcode_nomenclature/barcode_nomenclature_02.png
-    :align: center
+To use default nomenclature, navigate to :menuselection:`Inventory app --> Configuration -->
+Settings`. Under the :guilabel:`Barcode` section, click the checkbox next to :guilabel:`Barcode
+Scanner` to enable barcodes. Doing so installs the *Barcode* app in the database.
 
-The Barcode Pattern is a regular expression that defines the structure
-of the barcode. In this example 21 defines the products on which the
-rule will be applied, those are the numbers by which the product barcode
-should start. The 5 “dots” are the following numbers of the product
-barcode and are there simply to identify the product in question. The
-“N” define a number and the “D” define the decimals.
+Next, ensure that the :guilabel:`Default Nomenclature` setting is selected in the :guilabel:`Barcode
+Nomenclature` field.
 
-The encoding allows to specify the barcode encoding on which the rule
-should be applied.
+.. image:: barcode_nomenclature/barcode-nomenclature-enabled-setting.png
+   :align: center
+   :alt: Enabled barcode setting with Default Nomenclature selected.
+
+Once the nomenclature is selected, the :menuselection:`Barcode Nomenclatures` settings can be
+accessed by a hidden menu that's discoverable after enabling :ref:`developer mode <developer-mode>`.
+Once enabled, navigate to :menuselection:`Inventory app --> Configuration --> Barcode Nomenclatures`
+menu, and select :guilabel:`Default Nomenclature`.
+
+From this page, the list of *rules* and *barcode patterns* Odoo supports for the default
+nomenclature is accessible. The table contains all the information that can be condensed with a
+|UPC|/|EAN| barcode, along with the corresponding :guilabel:`Barcode Pattern`.
+
+.. _barcode/operations/use-upc-ean-barcodes:
+
+Use UPC/EAN barcodes in Odoo
+============================
+
+For product identification using |UPC|/|EAN| barcodes in Odoo, businesses obtain `barcodes
+<https://www.gs1us.org/upcs-barcodes-prefixes/how-to-get-a-upc-barcode>`_ purchased directly from
+GS1.
+
+The |UPC| and |EAN| barcode formats are predominantly used in their own regions. |UPC| is used only
+in the United States and Canada, while |EAN| is used everywhere else globally.
+
+A |UPC| is usually a 12-digit barcode used to identify most products, while |EAN| barcodes use
+13-digit barcodes to identify products.
+
+|UPC| codes can be converted to |EAN| by prefixing them with a zero. In Odoo, by default,
+|UPC|/|EAN| barcodes are automatically converted one way or another when trying to match a rule with
+the other encoding.
+
+Refer to the :ref:`default nomenclature list <barcode/operations/default-nomenclature-list>` to see
+a comprehensive list of all barcode patterns and rules to follow.
+
+Create rules
+------------
+
+|UPC| and |EAN| barcodes contain information in the barcode. Scanning these codes from the
+:ref:`default nomenclature list <barcode/operations/default-nomenclature-list>` automatically fills
+corresponding data in the Odoo database.
+
+Adding new barcode rules to this list ensures that non-standard (:dfn:`user-created`) formats are
+interpreted accurately.
+
+To create new rules, first activate :ref:`developer mode <developer-mode>`. Then, navigate to
+:menuselection:`Inventory app --> Configuration --> Barcode Nomenclatures`. Select the
+:guilabel:`Default Nomenclature` list item.
+
+On the :guilabel:`Default Nomenclature` page, select :guilabel:`Add a line` at the bottom of the
+table, which opens a window to create a new rule.
+
+.. image:: barcode_nomenclature/barcode-nomenclature-new-rule-popup.png
+   :align: center
+   :alt: Create Rules pop-up window on Default Nomenclature page.
+
+The :guilabel:`Rule Name` field is used internally to identify what the barcode represents. The
+barcode :guilabel:`Types` are different classifications of information that can be understood by the
+system (e.g., Package, Lot, Location, Coupon, etc.). The :guilabel:`Sequence` represents the
+priority of the rule; this means the smaller the value, the higher the rule appears on the table.
+
+Odoo follows the sequential order of this table, and will use the first rule it matches based on the
+sequence. The :guilabel:`Barcode Pattern` is how the sequence of letters or numbers is recognized by
+the system to contain information about the product.
 
 .. note::
-        You can define different rules and order their priority thanks to the
-        sequence. The first rule which matches the scanned barcode will be
-        applied.
+   Barcode patterns can also define how numerical values, such as weight or price, are encoded in
+   the barcode.
 
-Configure your Product
-----------------------
+   They are indicated by **{NNN}**, where N defines where the number's digits are encoded. *Floats*
+   are also supported with the decimals, indicated by D, such as **{NNNDD}**.
 
-1. The barcode of the product should start by “21”;
-2. The 5 “dots” are the other numbers of your product barcode, allowing to identify the product;
-3. The barcode should contain 0’s where you did defined D’s or N’s. In our case we need to set 5 zeros because we configured “21…..{NNDDD}”;
-4. In EAN-13, the last number is a check number, use an EAN13 generator to know which digit it should be in your case.
+   In this case, the barcode field on the associated records **must** show these digits as zeroes.
 
-.. image:: barcode_nomenclature/barcode_nomenclature_03.png
-    :align: center
+After filling in the information, click the :guilabel:`Save & New` button to make another rule, or
+click :guilabel:`Save & Close` to save and return to the table of rules.
 
-In case you weight 1,5 Kg of pasta, the balance will print you the
-following barcode 2112345015002. If you scan this barcode in your POS or
-when receiving products in your barcode application, Odoo will
-automatically create a new line for the Pasta product for a quantity of
-1.5 Kg. For the point of sale, a price depending on the quantity will
-also be computed.
+.. tip::
+   When the :guilabel:`Barcode Pattern` field contains `.*`, it means that it can contain **any**
+   number of characters, those characters being **any** number.
 
-.. image:: barcode_nomenclature/barcode_nomenclature_04.png
-    :align: center
+.. _barcode/operations/default-nomenclature-list:
 
-Rule Types
-----------
+Default nomenclature list
+=========================
 
-- **Priced Product**: allows you to identify the product and specify its price, used in POS.
-- **Discounted Product**: allows you to create one barcode per applied discount. You can then scan your product in the POS and then scan the discount barcode, discount will be applied on the normal price of the product.
-- **Weighted Product**: allows you to identify the product and specify its weight, used in both POS (in which the price is computed based on the weight) and in inventory.
-- **Client**: allows you to identify the customer, for example used with loyalty program.
-- **Cashier**: allows you to identify the cashier when entering the POS.
-- **Location**: allows you to identify the location on a transfer when multi-location is activated.
-- **Package**: allows you to identify packages on a transfer when packages are activated.
-- **Credit Card**: doesn’t need manual modification, exists for data from the Mercury module.
-- **Unit Product**: allows you to identify a product for both POS and transfers.
+The table below contains Odoo's list of default nomenclature rules. Barcode patterns are written in
+regular expressions.
 
-.. note::
-        When the barcode pattern contains .*, it means that it can contain any
-        number of characters, those characters being any number.
+.. list-table::
+   :header-rows: 1
+   :stub-columns: 1
+
+   * - Rule Name
+     - Type
+     - Encoding
+     - Barcode Pattern
+   * - Price Barcodes 2 Decimals
+     - Priced Product
+     - EAN-13
+     - 23.....{NNNDD}
+   * - Discount Barcodes
+     - Discounted Product
+     - Any
+     - 22{NN}
+   * - Weight Barcodes 3 Decimals
+     - Weighted Product
+     - EAN-13
+     - 21.....{NNDDD}
+   * - Customer Barcodes
+     - Client
+     - Any
+     - 042
+   * - Coupon & Gift Card Barcodes
+     - Coupon
+     - Any
+     - 043|044
+   * - Cashier Barcodes
+     - Cashier
+     - Any
+     - 041
+   * - Location barcodes
+     - Location
+     - Any
+     - 414
+   * - Package barcodes
+     - Package
+     - Any
+     - PACK
+   * - Lot barcodes
+     - Lot
+     - Any
+     - 10
+   * - Magnetic Credit Card
+     - Credit Card
+     - Any
+     - %.*
+   * - Product Barcodes
+     - Unit Product
+     - Any
+     - .*
