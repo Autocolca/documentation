@@ -249,7 +249,8 @@ information and statements. Odoo provides a way to import such statements automa
 
 .. note::
    As an accounting firm, you must manage your clients on separate databases and configure them
-   individually to avoid mixing up their data.
+   individually to avoid mixing up their data. The connection must be made by the accounting firm
+   which has valid CodaBox Connect credentials.
 
 Configuration
 ~~~~~~~~~~~~~
@@ -264,8 +265,7 @@ You must first :ref:`install <general/install>` :guilabel:`CodaBox` and
 .. important::
    Make sure the company settings are correctly configured, i.e., the country is set to
    :guilabel:`Belgium`, the :guilabel:`Tax ID` and :guilabel:`Accounting Firm` fields are filled,
-   as well as the :guilabel:`Tax ID` of the accounting firm (if not filled, the :guilabel:`Tax ID`
-   of the company is used).
+   as well as the :guilabel:`Tax ID` of the :guilabel:`Accounting Firm`.
 
 Configure the journals
 **********************
@@ -281,6 +281,10 @@ Configure the journals
       .. image:: belgium/codabox_configuration_coda_journal.png
          :align: center
          :alt: Configuration of a CODA journal.
+
+      .. tip::
+        When working with bank statements with different currencies, it is recommended to create
+        multiple journals with the same bank account but different currencies.
 
    .. tab:: For SODA files
 
